@@ -6,7 +6,7 @@ One way of use is to use generated data, as seen below in the example.<br>
 Another way is to use your own data. I've used my app's exported data template, you may need to alter it to your own, but commented the code, so it shouldn't be that hard. Good luck!<br><br>
 
 ### Example of imported data structure, to understand processing:
-(this is generated data, but corresponds to the real data's structure)
+(this is generated data, but corresponds to the real data's structure) <br>
 ==> data.csv <== <br>
 Start;End;Steps;Mode <br>
 <begin>;2024-01-05 15:54:32;43;Walking <br>
