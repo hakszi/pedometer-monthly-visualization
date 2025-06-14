@@ -1,5 +1,5 @@
 ### Why I created the script
-There are available packages like July, that does a similar job in an easier way, but it didn't work for me, and also deprecated. This package uses basic probably will not be deprecated packages. <br><br>
+There are available packages like July, that does a similar job in an easier way, but it didn't work for me, and also deprecated. This script uses basic packages, which will probably not be deprecated soon. <br><br>
 
 ### How to use
 One way of use is to use generated data, as seen below in the example.<br>
