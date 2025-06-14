@@ -1,4 +1,4 @@
-### Why I created
+### Why I created the script
 There are available packages like July, that does a similar job in an easier way, but it didn't work for me, and also deprecated. This package uses basic probably will not be deprecated packages. <br><br>
 
 ### How to use
