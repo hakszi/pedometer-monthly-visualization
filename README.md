@@ -1,4 +1,5 @@
-# pedometer-monthly-visualization
-Visualize pedometer step count data in neat monthly basis, written in Python
+There are available packages like July, that does a similar job in an easier way, but it didn't work for me, and also deprecated. This package uses basic probably will not be deprecated packages. 
+One way of use is to use generated data, as seen below in the example.
+Another way is to use your own data. I've used my app's exported data template, you may need to alter it to your own, but commented the code, so it shouldn't be that hard. Good luck!
 
 ![x](example.png)
