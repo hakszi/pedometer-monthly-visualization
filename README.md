@@ -31,7 +31,7 @@ Start;End;Steps;Mode <br>
 
 
 ### Example image
-![x](example.png)
+![x](example.png) 
 
 ## License
 This project uses the MIT License. See [LICENSE](LICENSE) for details.
