@@ -19,9 +19,9 @@ def main():
 
     h = []
     add_highlight(h, 'First day of data', df['Date'].iloc[0])
-    add_highlight(h, 'Some random event', '2024-02-11')
-    #add_highlight(h, 'Some random event', '2024-02-11','2025-02-11')
+    add_highlight(h, 'Some random event', '2024-02-11','2025-02-15')
     add_highlight(h, "Last day of data", df['Date'].iloc[-1])
+
 
     df = fill_empty_dates(df)
     y = year_df(df, 2024)
@@ -34,7 +34,7 @@ def main():
     fig, axes = plt.subplots(nrows=4,
                              ncols=3,
                              figsize=(20, 20),
-                             dpi=500)
+                             dpi=100)
 
     visualize(y, fig, axes, highlight)      # do visualization
 
@@ -174,7 +174,9 @@ def visualize(df, fig, axes, highlight):
             conversion_table.set_fontsize(12)                                                   # set font size to be bit bigger
             conversion_table.scale(1.7, 1.7)                                                    # set scale
 
+
             if highlight:
+                # highlight
                 for note, start_date, end_date in highlight:
                     if (y_split[i]['Date'] == start_date).any():
                         iso_year, target_week, target_weekday = start_date.isocalendar()
@@ -191,25 +193,28 @@ def visualize(df, fig, axes, highlight):
                         )
                         ax.add_patch(rect)
 
+                # legend
                 fig.subplots_adjust(left=.15, right=0.80)
                 highlight_patches = [
                     Rectangle((0, 0), 1, 1, edgecolor='red', facecolor='none', linewidth=2)
                     for _ in highlight
                 ]
                 fig.legend(
-                    handles=highlight_patches,
-                    labels=[f"{s.strftime('%Y-%m-%d')}: {n}" for n, s, e in highlight],
-                    loc='center right',
-                    bbox_to_anchor=(.95, 0.5),
-                    fontsize=10,
-                    title='Highlighted dates',
-                    title_fontsize='12'
+                        handles=highlight_patches,
+                        labels=[f"{s.strftime('%Y-%m-%d')}"
+                                f"{('–' + e.strftime('%Y-%m-%d')) if e is not pd.NaT else ''}:"
+                                f" {n}" for n, s, e in highlight],
+                        loc='center right',
+                        bbox_to_anchor=(.95, 0.5),
+                        fontsize=10,
+                        title='Highlighted dates',
+                        title_fontsize='12'
                 )
 
 
             i += 1                                                                              # don't forget to iterate the if statement
 
-    plt.savefig('output.png', dpi=500)                                                    # save the heatmap as pdf for best quality
-    # plt.show()                                                                                # or just show it, how neat is that
+    #plt.savefig('output.pdf', dpi=500)                                                    # save the heatmap as pdf for best quality
+    #plt.show()                                                                                # or just show it, how neat is that
 
 main()
