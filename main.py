@@ -9,23 +9,24 @@ from matplotlib.colors import ListedColormap
 
 
 def main():
-    # file = 'data.csv'
-    # sep = ';'
-    # df = read_data(file, sep)    # load the data into the dataframe
-    # df = transform_data(df)  # make slight edits (read function for more)
+    file = 'data.csv'
+    sep = ';'
+    df = read_data(file, sep)    # load the data into the dataframe
+    df = transform_data(df)  # make slight edits (read function for more)
 
     # alternatively, generate it
-    df = generate_data()
+    #df = generate_data()
 
     h = []
-    add_highlight(h, df['Date'].iloc[0], 'First day of data')
-    add_highlight(h, '2024-02-11', 'Some random event')
-    add_highlight(h, df['Date'].iloc[-1], "Last day of data")
+    add_highlight(h, 'First day of data', df['Date'].iloc[0])
+    add_highlight(h, 'Some random event', '2024-02-11')
+    #add_highlight(h, 'Some random event', '2024-02-11','2025-02-11')
+    add_highlight(h, "Last day of data", df['Date'].iloc[-1])
 
     df = fill_empty_dates(df)
     y = year_df(df, 2024)
 
-    highlight = [item for item in h if item[0].year == sorted(set(y['Date'].dt.year))[0]]
+    highlight = [item for item in h if item[1].year == sorted(set(y['Date'].dt.year))[0]]
 
     # 4x3 visualization plot template
     # lower "figsize" (figure size) and "dpi" to lessen quality and improve performance, speed
@@ -37,8 +38,8 @@ def main():
 
     visualize(y, fig, axes, highlight)      # do visualization
 
-def add_highlight(list, date, label):
-    return list.append((pd.Timestamp(date), label))
+def add_highlight(list, label, start, end=None):
+    return list.append((label, pd.Timestamp(start),pd.Timestamp(end)))
 
 def read_data(file, sep):
     return pd.read_csv(file, sep=sep) # read csv file based on provided separator symbol
@@ -174,9 +175,9 @@ def visualize(df, fig, axes, highlight):
             conversion_table.scale(1.7, 1.7)                                                    # set scale
 
             if highlight:
-                for target_date, note in highlight:
-                    if (y_split[i]['Date'] == target_date).any():
-                        iso_year, target_week, target_weekday = target_date.isocalendar()
+                for note, start_date, end_date in highlight:
+                    if (y_split[i]['Date'] == start_date).any():
+                        iso_year, target_week, target_weekday = start_date.isocalendar()
                         current_weeks = [d.isocalendar()[1] for d in y_split[i]['Date']]
                         min_week = min(current_weeks)
                         row = target_week - min_week
@@ -197,7 +198,7 @@ def visualize(df, fig, axes, highlight):
                 ]
                 fig.legend(
                     handles=highlight_patches,
-                    labels=[f"{d.strftime('%Y-%m-%d')}: {n}" for d, n in highlight],
+                    labels=[f"{s.strftime('%Y-%m-%d')}: {n}" for n, s, e in highlight],
                     loc='center right',
                     bbox_to_anchor=(.95, 0.5),
                     fontsize=10,
