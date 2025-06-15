@@ -3,21 +3,29 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 import random
+from matplotlib.patches import Rectangle
 
 from matplotlib.colors import ListedColormap
 
 
 def main():
-    #file = 'data.csv'
-    #sep = ';'
-    #df = read_data(file, sep)    # load the data into the dataframe
-    #df = transform_data(df)  # make slight edits (read function for more)
+    file = 'data.csv'
+    sep = ';'
+    df = read_data(file, sep)    # load the data into the dataframe
+    df = transform_data(df)  # make slight edits (read function for more)
 
     # alternatively, generate it
-    df = generate_data()
+    # df = generate_data()
 
-    df = fill_empty_dates(df)    # fill the dataframe's dates from first day of the year to the last year's last day
-    y = year_df(df, 2024)   # extract a given year
+    h = []
+    add_highlight(h, df['Date'].iloc[0], 'First day of data')
+    add_highlight(h, '2024-02-01', 'Some random event')
+    add_highlight(h, df['Date'].iloc[-1], "Last day of data")
+
+    df = fill_empty_dates(df)
+    y = year_df(df, 2024)
+
+    highlight = [item for item in h if item[0].year == sorted(set(y['Date'].dt.year))[0]]
 
     # 4x3 visualization plot template
     # lower "figsize" (figure size) and "dpi" to lessen quality and improve performance, speed
@@ -27,7 +35,10 @@ def main():
                              figsize=(20, 20),
                              dpi=500)
 
-    visualize(y, fig, axes)      # do visualization
+    visualize(y, fig, axes, highlight)      # do visualization
+
+def add_highlight(list, date, label):
+    return list.append((pd.Timestamp(date), label))
 
 def read_data(file, sep):
     return pd.read_csv(file, sep=sep) # read csv file based on provided separator symbol
@@ -113,7 +124,7 @@ def split_year(y):
         m.append(m_tmp)
     return m                                            # function used to split year into months to plot
 
-def visualize(df, fig, axes):
+def visualize(df, fig, axes, highlight):
     y_split = split_year(df)                            # split given year's dataframe into months
     year = sorted(set(y_split[0]['Date'].dt.year))      # find the year's name (to output in the title)
 
@@ -162,9 +173,42 @@ def visualize(df, fig, axes):
             conversion_table.set_fontsize(12)                                                   # set font size to be bit bigger
             conversion_table.scale(1.7, 1.7)                                                    # set scale
 
+            if highlight:
+                for target_date, note in highlight:
+                    if (y_split[i]['Date'] == target_date).any():
+                        iso_year, target_week, target_weekday = target_date.isocalendar()
+                        current_weeks = [d.isocalendar()[1] for d in y_split[i]['Date']]
+                        min_week = min(current_weeks)
+                        row = target_week - min_week
+                        col = target_weekday - 1
+                        rect = Rectangle(
+                            (col - 0.5, row - 0.5),
+                            1, 1,
+                            edgecolor='red',
+                            facecolor='none',
+                            linewidth=1.5
+                        )
+                        ax.add_patch(rect)
+
+                fig.subplots_adjust(left=.15, right=0.80)
+                highlight_patches = [
+                    Rectangle((0, 0), 1, 1, edgecolor='red', facecolor='none', linewidth=2)
+                    for _ in highlight
+                ]
+                fig.legend(
+                    handles=highlight_patches,
+                    labels=[f"{d.strftime('%Y-%m-%d')}: {n}" for d, n in highlight],
+                    loc='center right',
+                    bbox_to_anchor=(.95, 0.5),
+                    fontsize=10,
+                    title='Highlighted dates',
+                    title_fontsize='12'
+                )
+
+
             i += 1                                                                              # don't forget to iterate the if statement
 
-    plt.savefig('output.pdf', dpi=500)                                                    # save the heatmap as pdf for best quality
+    plt.savefig('output.png', dpi=500)                                                    # save the heatmap as pdf for best quality
     # plt.show()                                                                                # or just show it, how neat is that
 
 main()
