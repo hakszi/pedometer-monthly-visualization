@@ -9,17 +9,17 @@ from matplotlib.colors import ListedColormap
 
 
 def main():
-    file = 'data.csv'
-    sep = ';'
-    df = read_data(file, sep)    # load the data into the dataframe
-    df = transform_data(df)  # make slight edits (read function for more)
+    # file = 'data.csv'
+    # sep = ';'
+    # df = read_data(file, sep)    # load the data into the dataframe
+    # df = transform_data(df)  # make slight edits (read function for more)
 
     # alternatively, generate it
-    # df = generate_data()
+    df = generate_data()
 
     h = []
     add_highlight(h, df['Date'].iloc[0], 'First day of data')
-    add_highlight(h, '2024-02-01', 'Some random event')
+    add_highlight(h, '2024-02-11', 'Some random event')
     add_highlight(h, df['Date'].iloc[-1], "Last day of data")
 
     df = fill_empty_dates(df)
@@ -51,9 +51,9 @@ def transform_data(df):
                                                                 # corresponding value
 
 def generate_data():
-    data = np.random.randint(0, 35000, 365)
-    start = dt.datetime(2024, 1, 1)
-    dates = [start + dt.timedelta(days=i) for i in range(365)]
+    data = np.random.randint(0, 20000, 200)
+    start = dt.datetime(2024, 2, 5)
+    dates = [start + dt.timedelta(days=i) for i in range(200)]
     df = pd.DataFrame({'Date': dates, 'Steps': data})
     return df.groupby('Date', as_index=False)['Steps'].sum()
 
